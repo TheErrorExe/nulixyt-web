@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Bubble</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: black;
+      margin: 20px 0;
+    }
+
+    .profiles {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px; /* Abstand zwischen den Profilen */
+      margin-bottom: 50px;
+    }
+
+    .profile {
+      text-align: center;
+    }
+
+    .profile img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 80%;
+    }
+
+    .gallery img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Bubble</h1>
+  <div class="profiles">
+    <div class="profile">
+      <a href="https://link-to-white.com" target="_blank">
+        <img src="https://via.placeholder.com/100" alt="White">
+      </a>
+      <p>White</p>
+    </div>
+    <div class="profile">
+      <a href="https://link-to-nulix.com" target="_blank">
+        <img src="https://via.placeholder.com/100" alt="Nulix">
+      </a>
+      <p>Nulix</p>
+    </div>
+    <div class="profile">
+      <a href="https://link-to-koopa.com" target="_blank">
+        <img src="https://via.placeholder.com/100" alt="Koopa">
+      </a>
+      <p>Koopa</p>
+    </div>
+    <div class="profile">
+      <a href="https://link-to-fio.com" target="_blank">
+        <img src="https://via.placeholder.com/100" alt="Fio">
+      </a>
+      <p>Fio</p>
+    </div>
+  </div>
+
+  <div class="gallery">
+    <img src="https://via.placeholder.com/200x150" alt="Image 1">
+    <img src="https://via.placeholder.com/200x150" alt="Image 2">
+    <img src="https://via.placeholder.com/200x150" alt="Image 3">
+    <img src="https://via.placeholder.com/200x150" alt="Image 4">
+  </div>
+
+  <canvas id="falling-background"></canvas>
+
+  <script>
+    const canvas = document.getElementById('falling-background');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const items = [];
+    const emojis = ['🥕', '🎃', '⚪'];
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    class FallingItem {
+      constructor() {
+        this.x = random(0, canvas.width);
+        this.y = random(-50, canvas.height);
+        this.size = random(10, 30);
+        this.speed = random(2, 5);
+        this.text = emojis[Math.floor(random(0, emojis.length))];
+      }
+
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+          this.y = -50;
+          this.x = random(0, canvas.width);
+        }
+      }
+
+      draw() {
+        ctx.font = `${this.size}px Arial`;
+        ctx.fillText(this.text, this.x, this.y);
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < 50; i++) {
+        items.push(new FallingItem());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      items.forEach(item => {
+        item.update();
+        item.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      items.length = 0;
+      init();
+    });
+  </script>
+</body>
+</html>
